@@ -15,12 +15,11 @@ import (
 
 
 var (
-	urlStart, urlDest string
-	q *lfc.Queue
-	nbWorkers, nbProcs int
-	wg sync.WaitGroup
+	urlStart, urlDest						 string
+	q   												 *lfc.Queue
+	nbWorkers, nbProcs					 int
 	pageCounter, maxVisitedPages int
-	useWatcher bool
+	useWatcher									 bool
 )
 
 
@@ -65,6 +64,7 @@ func main() {
 		panic(err)
 	}
 
+	var wg sync.WaitGroup
 	wg.Add(nbWorkers)
 
 	done := make(chan struct{})
