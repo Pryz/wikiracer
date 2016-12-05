@@ -17,6 +17,8 @@ type Page struct {
 }
 
 
+// Worker is used within a Goroutine. A worker will fetch a link from the Queue, check if the link is the final destination
+// if not, the worker will get all the hrefs from that link and stack them to the Queue
 func worker(endUrl *url.URL, q *lfc.Queue, c *cache.Cache, pCounter *int, wg *sync.WaitGroup, done chan struct{}) {
 	defer wg.Done()
 	for {
@@ -55,6 +57,7 @@ func worker(endUrl *url.URL, q *lfc.Queue, c *cache.Cache, pCounter *int, wg *sy
 }
 
 
+// Watcher is used within a Goroutine to get live status of the race
 func watcher(q *lfc.Queue, c *int, maxPages int ,done chan struct{}) {
 	for {
 		select {
@@ -79,6 +82,8 @@ func watcher(q *lfc.Queue, c *int, maxPages int ,done chan struct{}) {
 }
 
 
+// Retrieve the path of the race form the Cache.
+// Will return nil and false if no path has been found.
 func retrievePathToPage(c *cache.Cache, page string, root string) ([]string, bool) {
 	var path []string
 	node, found := c.Get(page)
@@ -95,6 +100,7 @@ func retrievePathToPage(c *cache.Cache, page string, root string) ([]string, boo
 }
 
 
+// Take an array and reverse it
 func reversePath(path []string) []string {
 	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
 		path[i], path[j] = path[j], path[i]
